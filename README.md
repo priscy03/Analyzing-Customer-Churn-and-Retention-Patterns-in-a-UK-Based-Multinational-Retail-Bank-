@@ -46,5 +46,117 @@ Overall, improving engagement among inactive customers, strengthening onboarding
 
 # Insights Deep Dive
 
+## Demographics & Segmentation
+
+
+
+<img width="453" height="98" alt="bank demographics " src="https://github.com/user-attachments/assets/253cde91-0d93-455f-987e-5d58accd47bf" />
+
+The bank has more male than female customers across all three markets.
+
+The largest age groups are 26–35 and 36–45, representing the core customer base.( Young or mid-level Professionals )
+
+<img width="449" height="94" alt="credit score   balance" src="https://github.com/user-attachments/assets/d3cb20f8-60ef-4397-9ca2-655978123f8f" />
+
+Most customers fall into Poor, Fair, or Good credit score categories.(Average credit score: 650.60)
+
+Customer balances vary widely, with concentrations in very low (<£1k) and high (£10k–£100k) ranges; mid-level balances are uncommon.(Average customer balance: £27.15k)
+
+<img width="449" height="105" alt="products and tenure " src="https://github.com/user-attachments/assets/01aec3b0-880f-45d9-a36e-8a50cb3599b8" />
+
+Tenure distribution shows:
+
+Loyal customers (>5 years) are the largest group.
+
+New customers (0–2 years) are the smallest;suggesting weak customer acquisition.
+
+Product engagement remains low; Majority hold 0–2 products, with very few reaching high engagement (≥3 products) ; indicating difficulty in driving cross-sell.
+
+## Churn Analysis
+
+<img width="259" height="296" alt="churn and products " src="https://github.com/user-attachments/assets/93c6e8b9-b2b7-43a5-a27b-3a7ebc8c5eca" />
+
+• Churn is high across all regions:
+
+UK: 498, Germany: 453, France: 434 ;differences are small, showing churn is not region-specific.
+
+• Credit card ownership does not appear to influence churn:
+
+Non-churned without credit card: 1.5k
+
+Churned without credit card: 1.4k
+
+• Customer engagement remains flat regardless of tenure ; even loyal customers rarely progress beyond moderate engagement.
+
+
+<img width="252" height="197" alt="balances and credit score " src="https://github.com/user-attachments/assets/ffa4220d-e92e-4ccf-92e4-ef2b172b880a" />
+
+•Average balance of churned customers:
+
+Germany: £15k
+
+UK: £17k
+
+France: £17k
+
+•Germany’s retained customers have the highest average balance (£30k) compared to the UK (£29k) and France (£28k).
+
+•Most churned customers fall within Poor/Fair/Good credit score bands, indicating mid and low quality credit profiles are more vulnerable to leaving.
+
+## Risk Profile - High Churn Risk
+
+
+<img width="630" height="341" alt="Active , High Risk" src="https://github.com/user-attachments/assets/bc8e6454-5e8a-4a56-b18e-da262849b92a" />
+
+
+1. Active Customers ; High Churn Risk
+
+Even among customers who are actively using the bank, certain segments show high churn risk:
+
+Low product engagement (0–1 products)
+
+Poor to Fair credit scores
+
+Age groups: 26–35 and 36–45
+
+These customers are active but not deeply committed, suggesting the bank is failing to convert activity into long-term engagement or loyalty.
+
+Customers may be exploring alternatives, experiencing dissatisfaction, or not finding value that encourages deeper product adoption.
+
+
+<img width="635" height="309" alt="Inactive ,High risk" src="https://github.com/user-attachments/assets/461b089a-1d6d-4ddb-941a-ec3ff3da9253" />
+
+
+2.Inactive Customers ; High Churn Risk
+
+Inactive customers show an even clearer risk pattern:
+
+Low product engagement
+
+Poor–Fair credit scores
+
+Present across all age groups
+
+Their inactivity combined with weak financial profiles makes them the most vulnerable segment.
+
+Low engagement and inactivity usually signals customers who are disengaging from the bank’s ecosystem, making them likely to churn if not re-engaged quickly.
+
+
+## Overall Takeaway
+
+•Across both active and inactive customers, the common indicators of churn risk are:
+
+Low product engagement
+
+Poor–Fair credit quality
+
+Younger to mid-age adults (26–45) for active users
+
+All ages for inactive users
+
+•This means engagement and activity is the strongest predictor of churn.
+
+
+
 
 
