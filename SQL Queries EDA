@@ -1,0 +1,172 @@
+ --Exploratory Data Analysis --
+
+---Statistical Summary
+SELECT MIN (Age) AS min_age ,AVG(Age) AS Average_Age, MAX (Age) AS max_age
+FROM CustomerInfo;
+SELECT MIN (Tenure) AS min_tenure ,AVG(Tenure) AS Average_Tenure, MAX (Tenure) AS max_tenure 
+FROM AccountInfo;
+SELECT MIN(Balance) AS min_balance ,AVG(Balance) AS Average_Balance, MAX (Balance) AS Max_balance
+From AccountInfo;
+SELECT MIN(CreditScore) AS min_CS ,AVG(CreditScore) AS Average_CS, MAX (CreditScore) AS Max_CS
+From AccountInfo;
+
+---Univariant---Low & Moderate engagement
+SELECT ProductTier, COUNT (CustomerId) AS Engagement_Count
+FROM ChurnAnalysis
+GROUP BY ProductTier;
+
+--BIVARIATE --498-Uk highest ,but France & Germany dont lag too far behind.
+SELECT Country , ChurnStatus , COUNT(CustomerId) AS COUNT
+FROM ChurnAnalysis
+WHERE ChurnStatus = 'Churned'
+GROUP BY Country, ChurnStatus;
+
+
+--Overall Churn Rate--13.85% 
+SELECT
+  COUNT(*) AS Total_Customers,
+  SUM(CASE WHEN ChurnStatus = 'Churned' THEN 1 ELSE 0 END) AS Total_Churned,
+  ROUND(100.0 * SUM(CASE WHEN ChurnStatus = 'Churned' THEN 1 ELSE 0 END) 
+  / COUNT(*), 2) AS ChurnRatePct
+FROM ChurnAnalysis;
+
+---Churn by Age Group;Age group 26-35, highest % of churn (15.81%) ; 36-45 , most churned in number (488),
+SELECT
+  AgeGroup,
+  COUNT(*) AS Total_In_Group,
+  SUM(CASE WHEN ChurnStatus = 'Churned' THEN 1 ELSE 0 END) AS Churned_In_Group,
+  ROUND(100.0 * SUM(CASE WHEN ChurnStatus = 'Churned' THEN 1 ELSE 0 END) 
+  / COUNT(*), 2) AS ChurnRatePct
+FROM ChurnAnalysis
+GROUP BY AgeGroup
+ORDER BY ChurnRatePct DESC;
+
+---Churn by Credit Score Range-**Poor Score ,significant churn ,408, Fair Score has highest % (15.29%)
+SELECT
+  CreditScoreRange,
+  COUNT(*) AS Total,
+  SUM(CASE WHEN ChurnStatus = 'Churned' THEN 1 ELSE 0 END) AS Churned,
+  ROUND(100.0 * SUM(CASE WHEN ChurnStatus = 'Churned' THEN 1 ELSE 0 END) 
+  / COUNT(*), 2) AS ChurnRatePct
+FROM ChurnAnalysis
+GROUP BY CreditScoreRange
+ORDER BY ChurnRatePct DESC;
+
+---Churn by Product Tier, low , moderate engagement , significant churn,670 & 654 resp.
+SELECT
+  ProductTier,
+  COUNT(*) AS Total,
+  SUM(CASE WHEN ChurnStatus = 'Churned' THEN 1 ELSE 0 END)  AS Churned,
+  ROUND(100.0 * SUM(CASE WHEN ChurnStatus = 'Churned' THEN 1 ELSE 0 END) 
+  / COUNT(*), 2) AS ChurnRatePct
+FROM ChurnAnalysis
+GROUP BY ProductTier
+ORDER BY ChurnRatePct DESC;
+
+---Churn Rate by Country- churn most in U.K, Germany and France are not too far behind 
+SELECT
+  Country,
+  COUNT(*) AS Total_Customers,
+  SUM(CASE WHEN ChurnStatus = 'Churned' THEN 1 ELSE 0 END) AS Churned_Customers,
+  ROUND(100.0 * SUM(CASE WHEN ChurnStatus = 'Churned' THEN 1 ELSE 0 END) 
+  / COUNT(*), 2) AS ChurnRatePct
+FROM ChurnAnalysis
+GROUP BY Country
+ORDER BY ChurnRatePct DESC;
+
+---Average Balance & Credit Score by Churn customers had on average lower balances & good& fair credit score 
+SELECT
+  Country,
+  ChurnStatus,
+  ROUND(AVG(Balance), 2) AS AvgBalance,
+  ROUND(AVG(CreditScore), 0) AS AvgCreditScore,
+  COUNT(*) AS Count
+FROM ChurnAnalysis
+GROUP BY Country, ChurnStatus
+ORDER BY Country, ChurnStatus;
+
+---Product-Tier Distribution by Country;moderate and low engagement,higher enagement is not so much
+SELECT
+  Country,
+  ProductTier,
+  COUNT(*) AS CustomerCount
+FROM ChurnAnalysis
+GROUP BY Country, ProductTier
+ORDER BY Country, ProductTier;
+
+---Segmentation of Customers Based on Risk Profiles & Account Usage
+SELECT *,
+  CASE
+    WHEN ChurnStatus = 'Churned' THEN 'High Risk (Already Churned)'
+    WHEN ActiveStatus = 'Not Active'
+         AND ProductTier = 'Low Engagement (<=1)' THEN 'Medium Risk'
+    WHEN CreditScoreRange IN ('Poor (300-599)', 'Fair (600-649)')
+         AND AccountBalanceRange IN ('Low (<1k)', 'Medium (1k-10k)') THEN 'Elevated Risk'
+    ELSE 'Lower Risk'
+  END AS ChurnRiskLevel
+FROM ChurnAnalysis;
+
+CREATE VIEW CustomerRisk AS
+SELECT
+  ca.CustomerId,
+  ca.Country,
+  ca.AgeGroup,
+  ca.CreditScoreRange,
+  ca.AccountBalanceRange,
+  ca.ProductTier,
+  ca.TenureGroup,
+  ca.ActiveStatus,
+  ca.ChurnStatus,
+  CASE
+    WHEN ca.CreditScoreRange IN ('Poor (300-599)', 'Fair (600-649)')
+         AND ca.AccountBalanceRange = 'Low (<1k)'
+         AND ca.ProductTier = 'Low Engagement (<=1)'
+         AND ca.TenureGroup = 'New (0-2)' 
+      THEN 'High Risk'
+
+    WHEN (ca.CreditScoreRange IN ('Poor (300-599)', 'Fair (600-649)')
+          AND ca.AccountBalanceRange IN ('Low (<1k)', 'Medium (1k-10k)'))
+      THEN 'Elevated Risk'
+
+    WHEN ca.ProductTier = 'Moderate Engagement (=2)'
+         OR ca.TenureGroup = 'Established (3-5)' 
+      THEN 'Medium Risk'
+ ELSE 'Lower Risk'
+  END AS ChurnRiskLevel
+FROM ChurnAnalysis AS ca;
+
+SELECT TOP 20 CustomerId, CreditScoreRange, AccountBalanceRange, ProductTier, TenureGroup, ChurnStatus, ChurnRiskLevel
+FROM CustomerRisk;
+
+---Customer Risk Profile by %, *** elevated risk highest , cause for concern
+SELECT 
+  ChurnRiskLevel, 
+  COUNT(*) AS TotalCustomers, 
+  SUM(CASE WHEN ChurnStatus = 'Churned' THEN 1 ELSE 0 END) AS ChurnedCount,
+  ROUND(100.0 * SUM(CASE WHEN ChurnStatus = 'Churned' THEN 1 ELSE 0 END) / COUNT(*), 2) AS ChurnRatePct
+FROM CustomerRisk
+GROUP BY ChurnRiskLevel
+ORDER BY 
+  CASE 
+    WHEN ChurnRiskLevel = 'High Risk' THEN 1
+    WHEN ChurnRiskLevel = 'Elevated Risk' THEN 2
+    WHEN ChurnRiskLevel = 'Medium Risk' THEN 3
+    WHEN ChurnRiskLevel = 'Lower Risk' THEN 4
+    ELSE 5
+  END;
+
+  ---Risk Profile by Country as % -High & elevated risk profile higher percentages across three countries
+  SELECT 
+  Country,
+  ChurnRiskLevel,
+  COUNT(*) AS Total,
+  SUM(CASE WHEN ChurnStatus = 'Churned' THEN 1 ELSE 0 END) AS ChurnedCount,
+  ROUND(100.0 * SUM(CASE WHEN ChurnStatus = 'Churned' THEN 1 ELSE 0 END) / COUNT(*), 2) AS ChurnRatePct
+FROM CustomerRisk
+GROUP BY Country, ChurnRiskLevel
+ORDER BY Country, ChurnRiskLevel;
+
+
+SELECT ChurnStatus, COUNT(*) 
+FROM CustomerRisk
+GROUP BY ChurnStatus;
