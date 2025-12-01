@@ -1,0 +1,183 @@
+-Data Assessment & Segmentation-
+
+SELECT TOP (1000) [CustomerId]
+      ,[LastName]
+      ,[Country]
+      ,[Gender]
+      ,[Age]
+  FROM [Veritasdb].[dbo].[CustomerInfo]
+  select * from CustomerInfo
+  select * from AccountInfo
+
+--DATA CLEANING
+-- Check for duplicates in CustomerInfo
+SELECT CustomerId, COUNT(*) AS Count
+FROM CustomerInfo
+GROUP BY CustomerId
+HAVING COUNT(*) > 1;
+
+-- Count NULLs
+SELECT 
+  SUM(CASE WHEN CreditScore IS NULL THEN 1 ELSE 0 END) AS NullCreditScore,
+  SUM(CASE WHEN Balance IS NULL THEN 1 ELSE 0 END) AS NullBalance 
+FROM AccountInfo;
+  
+  SELECT
+   SUM(CASE WHEN Age IS NULL THEN 1 ELSE 0 END) AS NullAge,
+  SUM(CASE WHEN Country IS NULL THEN 1 ELSE 0 END) AS NullCountry
+FROM CustomerInfo;
+
+
+---Data Transformation 
+
+---Segmentation & Views
+
+ALTER TABLE CustomerInfo ADD AgeGroup VARCHAR(20);
+UPDATE CustomerInfo
+SET AgeGroup = CASE 
+  WHEN Age BETWEEN 18 AND 25 THEN '18-25'
+  WHEN Age BETWEEN 26 AND 35 THEN '26-35'
+  WHEN Age BETWEEN 36 AND 45 THEN '36-45'
+  WHEN Age BETWEEN 46 AND 60 THEN '46-60'
+  ELSE '60+'
+END;
+
+ALTER TABLE AccountInfo ADD TenureGroup VARCHAR(20);
+UPDATE AccountInfo
+SET TenureGroup = CASE 
+  WHEN Tenure BETWEEN 0 AND 2 THEN 'New'
+  WHEN Tenure BETWEEN 3 AND 5 THEN 'Established'
+  ELSE 'Loyal'
+END;
+
+ALTER TABLE AccountInfo
+DROP COLUMN TenureGroup;
+
+--Customers table view
+
+CREATE VIEW customers AS
+SELECT 
+     CustomerId,
+    LastName,
+    Country,
+    Gender,
+    Age
+FROM CustomerInfo;
+
+
+    ---Age Group 
+  SELECT Age ,
+   CASE 
+  WHEN Age BETWEEN 18 AND 25 THEN '18-25'
+  WHEN Age BETWEEN 26 AND 35 THEN '26-35'
+  WHEN Age BETWEEN 36 AND 45 THEN '36-45'
+  WHEN Age BETWEEN 46 AND 60 THEN '46-60'
+  ELSE '60+'
+  END AS AgeGroup
+  FROM CustomerInfo;
+
+  ---Accounts table view
+CREATE VIEW accounts AS
+SELECT 
+    a.CustomerId,
+    a.CreditScore,
+    a.Tenure,
+    a.Balance,
+    a.Products 
+FROM AccountInfo AS a;
+
+    -- Active status
+    SELECT ActiveMember,
+    CASE
+      WHEN a.ActiveMember = 1 THEN 'Active'
+      WHEN a.ActiveMember = 0 THEN 'Not Active'
+      ELSE 'Unknown'
+    END AS ActiveStatus
+    FROM AccountInfo AS a;
+
+    -- Churn status (Exited)
+    SELECT Exited,
+    CASE
+      WHEN a.Exited = 1 THEN 'Churned'
+      WHEN a.Exited = 0 THEN 'Not Churned'
+      ELSE 'Unknown'
+    END AS ChurnStatus
+    FROM AccountInfo AS a;
+
+    -- Credit card status
+   SELECT CreditCard, 
+    CASE
+      WHEN a.CreditCard = 1 THEN 'YES'
+      WHEN a.CreditCard = 0 THEN 'NO'
+      ELSE 'Unknown'
+    END AS CreditCardStatus
+    FROM AccountInfo AS a;
+
+    -- Credit score range
+    SELECT CreditScore,
+    CASE
+      WHEN a.CreditScore BETWEEN 300 AND 599 THEN 'Poor (300-599)'
+      WHEN a.CreditScore BETWEEN 600 AND 649 THEN 'Fair (600-649)'
+      WHEN a.CreditScore BETWEEN 650 AND 699 THEN 'Good (650-699)'
+      WHEN a.CreditScore BETWEEN 700 AND 749 THEN 'Very Good (700-749)'
+      WHEN a.CreditScore BETWEEN 750 AND 799 THEN 'Excellent (750-799)'
+      WHEN a.CreditScore BETWEEN 800 AND 850 THEN 'Elite (800-850)'
+      ELSE 'Out of Range'
+    END AS CreditScoreRange
+    FROM AccountInfo AS a;
+
+    -- Balance buckets
+    SELECT Balance,
+    CASE 
+  WHEN a.Balance < 1000 THEN 'Low (<1k)'
+  WHEN a.Balance BETWEEN 1000 AND 9999 THEN 'Medium (1k-10k)'
+  WHEN a.Balance BETWEEN 10000 AND 99999 THEN 'High (10k-100k)'
+  WHEN a.Balance >= 100000 THEN 'Very High (>100k)'
+  ELSE 'Unknown'
+  END AS AccountBalanceRange
+  FROM AccountInfo AS a;
+
+    -- Tenure groups
+
+   SELECT Tenure,
+    CASE 
+      WHEN a.Tenure BETWEEN 0 AND 2 THEN 'New (0-2)'
+      WHEN a.Tenure BETWEEN 3 AND 5 THEN 'Established (3-5)'
+      WHEN a.Tenure > 5 THEN 'Loyal (>5)'
+      ELSE 'Unknown'
+    END AS TenureGroup
+    FROM AccountInfo AS a;
+
+    -- Product-based engagement tier
+    SELECT Products,
+    CASE
+      WHEN a.Products <= 1 THEN 'Low Engagement (<=1)'
+      WHEN a.Products = 2 THEN 'Moderate Engagement (=2)'
+      WHEN a.Products >= 3 THEN 'High Engagement (>=3)'
+      ELSE 'Unknown'
+    END AS ProductTier
+FROM AccountInfo AS a;
+
+CREATE VIEW ChurnAnalysis AS
+SELECT
+    c.CustomerId,
+    c.Country,
+    c.Gender,
+    c.Age,
+    c.AgeGroup,
+
+    a.CreditScore,
+    a.CreditScoreRange,
+    a.Balance,
+    a.AccountBalanceRange,
+    a.Products,
+    a.ProductTier,
+    a.Tenure,
+    a.TenureGroup,
+    a.ActiveStatus,
+    a.CreditCardStatus,
+    a.ChurnStatus
+
+FROM customers AS c
+JOIN accounts  AS a
+  ON c.CustomerId = a.CustomerId;
