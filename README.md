@@ -17,6 +17,12 @@ Insights and recommendations are provided on the following key areas:
 4.	Risk Profiling & Churn Drivers
 5.	Customer Acquisition & Loyalty
 
+The SQL queries used to inspect and clean the data for this analysis can be found here [link].
+
+Targed SQL queries regarding various business questions can be found here [link].
+
+Power BI dashboard used to report and explore FNOL Claims data can be found here [(https://github.com/priscy03/Early-Prediction-of-Motor-Insurance-Claim-Costs-Using-FNOL-Data/blob/main/FNOL%20Insurance%20Claims.pdf)]
+
 
 # Data Structure & Initial Checks
 Veritas Bank database structure as seen below consists of Four tables: Customers,Accounts, CustomerRisk,ChurnAnalysis with a total row count of 20,000 records.
