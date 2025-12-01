@@ -17,7 +17,7 @@ Insights and recommendations are provided on the following key areas:
 4.	Risk Profiling & Churn Drivers
 5.	Customer Acquisition & Loyalty
 
-The SQL queries used to inspect and clean the data for this analysis can be found here [link].
+The SQL queries used to inspect and clean the data for this analysis can be found here [(https://github.com/priscy03/Analyzing-Customer-Churn-and-Retention-Patterns-in-a-UK-Based-Multinational-Retail-Bank-/blob/main/SQL%20Queries%20Segmentation)].
 
 Targed SQL queries regarding various business questions can be found here [link].
 
