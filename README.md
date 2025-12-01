@@ -19,7 +19,7 @@ Insights and recommendations are provided on the following key areas:
 
 The SQL queries used to inspect and clean the data for this analysis can be found here [(https://github.com/priscy03/Analyzing-Customer-Churn-and-Retention-Patterns-in-a-UK-Based-Multinational-Retail-Bank-/blob/main/SQL%20Queries%20Segmentation)].
 
-Targed SQL queries regarding various business questions can be found here [link].
+Targed SQL queries regarding various business questions can be found here [(https://github.com/priscy03/Analyzing-Customer-Churn-and-Retention-Patterns-in-a-UK-Based-Multinational-Retail-Bank-/blob/main/SQL%20Queries%20EDA)].
 
 Power BI dashboard used to report and explore FNOL Claims data can be found here [(https://github.com/priscy03/Analyzing-Customer-Churn-and-Retention-Patterns-in-a-UK-Based-Multinational-Retail-Bank-/blob/main/Veritas%20Bank%20-%20Dasboard.pdf)]
 
