@@ -225,7 +225,7 @@ All ages for inactive users
  •Feedback loops: Collect churned customer feedback systematically to refine product-market fit and service quality.
 
 
-# Assumptions (Working Premises)
+# Assumptions
  
 ### Data Reliability
 
@@ -248,7 +248,7 @@ All ages for inactive users
 • 	Analysts and/or data scientists are available to maintain churn models and dashboards.
 
 
-# Caveats (Limitations & Risks)
+# Caveats
 
 ### Data Quality & Completeness
 
